@@ -20,6 +20,7 @@ class gitlab_ci_runner (
   Optional[Integer]          $concurrent               = undef,
   Optional[String]           $builds_dir               = undef,
   Optional[String]           $cache_dir                = undef,
+  Optional[Boolean]          $privileged               = false,
   Optional[Pattern[/.*:.+/]] $metrics_server           = undef,
   Boolean                    $manage_docker            = true,
   Boolean                    $manage_repo              = true,
@@ -133,6 +134,16 @@ class gitlab_ci_runner (
       path    => '/etc/gitlab-runner/config.toml',
       line    => "cache_dir = \"${cache_dir}\"",
       match   => '^cache_dir = .+',
+      require => Package[$package_name],
+      notify  => Exec['gitlab-runner-restart'],
+    }
+  }
+
+  if $privileged {
+    file_line { 'gitlab-runner-cache_dir':
+      path    => '/etc/gitlab-runner/config.toml',
+      line    => "privileged = \"${privileged}\"",
+      match   => '^privileged = (true|false)',
       require => Package[$package_name],
       notify  => Exec['gitlab-runner-restart'],
     }

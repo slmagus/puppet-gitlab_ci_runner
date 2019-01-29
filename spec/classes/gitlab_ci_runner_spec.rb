@@ -35,6 +35,7 @@ describe 'gitlab_ci_runner', type: :class do
       it { is_expected.not_to contain_file_line('gitlab-runner-metrics-server') }
       it { is_expected.not_to contain_file_line('gitlab-runner-builds_dir') }
       it { is_expected.not_to contain_file_line('gitlab-runner-cache_dir') }
+      it { is_expected.not_to contain_file_line('gitlab-runner-privileged') }
 
       context 'with concurrent => 10' do
         let(:params) do
@@ -102,6 +103,23 @@ describe 'gitlab_ci_runner', type: :class do
           is_expected.to contain_file_line('gitlab-runner-cache_dir').with('path' => '/etc/gitlab-runner/config.toml',
                                                                            'line'  => 'cache_dir = "/tmp/cache_dir"',
                                                                            'match' => '^cache_dir = .+')
+        end
+      end
+      context 'with privileged => true' do
+        let(:params) do
+          {
+            'runner_defaults' => {},
+            'runners' => {},
+            'privileged' => true
+          }
+        end
+
+        it { is_expected.to contain_file_line('gitlab-runner-privileged').that_requires("Package[#{package_name}]") }
+        it { is_expected.to contain_file_line('gitlab-runner-privileged').that_notifies('Exec[gitlab-runner-restart]') }
+        it do
+          is_expected.to contain_file_line('gitlab-runner-privileged').with('path' => '/etc/gitlab-runner/config.toml',
+                                                                           'line'  => 'privileged = true',
+                                                                           'match' => '^privileged = (true|false)')
         end
       end
     end

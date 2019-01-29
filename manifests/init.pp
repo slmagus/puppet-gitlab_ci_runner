@@ -140,7 +140,7 @@ class gitlab_ci_runner (
   }
 
   if $privileged {
-    file_line { 'gitlab-runner-cache_dir':
+    file_line { 'gitlab-runner-privileged':
       path    => '/etc/gitlab-runner/config.toml',
       line    => "privileged = \"${privileged}\"",
       match   => '^privileged = (true|false)',

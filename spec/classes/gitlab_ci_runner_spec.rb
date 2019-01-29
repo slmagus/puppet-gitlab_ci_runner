@@ -118,8 +118,8 @@ describe 'gitlab_ci_runner', type: :class do
         it { is_expected.to contain_file_line('gitlab-runner-privileged').that_notifies('Exec[gitlab-runner-restart]') }
         it do
           is_expected.to contain_file_line('gitlab-runner-privileged').with('path' => '/etc/gitlab-runner/config.toml',
-                                                                           'line'  => 'privileged = true',
-                                                                           'match' => '^privileged = (true|false)')
+                                                                            'line'  => 'privileged = true',
+                                                                            'match' => '^privileged = (true|false)')
         end
       end
     end

@@ -142,7 +142,7 @@ class gitlab_ci_runner (
   if $privileged {
     file_line { 'gitlab-runner-privileged':
       path    => '/etc/gitlab-runner/config.toml',
-      line    => "privileged = \"${privileged}\"",
+      line    => "privileged = ${privileged}",
       match   => '^privileged = (true|false)',
       require => Package[$package_name],
       notify  => Exec['gitlab-runner-restart'],
